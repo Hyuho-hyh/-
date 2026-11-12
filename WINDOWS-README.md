@@ -1,5 +1,7 @@
 # HGhub Windows 安装与构建说明
 
+GitHub 仓库中的部分图标以 `scripts/windows-assets.zip.b64` 合并存储。GitHub Actions 会自动还原；如果从 GitHub 下载源码后在本机构建，先在项目根目录执行 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/restore-binary-assets.ps1`。此前提供的完整源码 ZIP 已包含全部图标。
+
 适用文件：你提供的 `study-materials-fork-main.zip`，包内版本为 1.2.1。
 
 ## 先分清两个文件

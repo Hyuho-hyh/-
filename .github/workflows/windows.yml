@@ -2,6 +2,8 @@ name: Windows installer
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
 
 permissions:
   contents: read
@@ -15,6 +17,10 @@ jobs:
       CI: "true"
     steps:
       - uses: actions/checkout@v4
+
+      - name: Restore bundled binary assets
+        shell: pwsh
+        run: ./scripts/restore-binary-assets.ps1
 
       - uses: pnpm/action-setup@v4
         with:
