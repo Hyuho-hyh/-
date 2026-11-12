@@ -1,0 +1,61 @@
+name: Windows installer
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: Build Windows x64
+    runs-on: windows-latest
+    timeout-minutes: 60
+    env:
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build NSIS installer
+        run: pnpm tauri build --bundles nsis
+
+      - name: Collect Windows files
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $outputDir = Join-Path $env:GITHUB_WORKSPACE "windows-package"
+          New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
+          $installers = @(Get-ChildItem -LiteralPath "src-tauri/target/release/bundle/nsis" -Filter "*.exe" -File)
+          if ($installers.Count -eq 0) { throw "No NSIS installer was generated." }
+          foreach ($installer in $installers) {
+            Copy-Item -LiteralPath $installer.FullName -Destination $outputDir
+          }
+          Copy-Item -LiteralPath "src-tauri/target/release/huangguo-client.exe" -Destination (Join-Path $outputDir "HGhub.exe")
+          Copy-Item -LiteralPath "LICENSE" -Destination (Join-Path $outputDir "LICENSE.txt")
+          Copy-Item -LiteralPath "WINDOWS-INSTALL.txt" -Destination $outputDir
+          Get-ChildItem -LiteralPath $outputDir | Select-Object Name,Length
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HGhub-Windows-x64
+          path: windows-package/
+          if-no-files-found: error
+          retention-days: 14
