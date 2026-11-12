@@ -1,0 +1,17 @@
+HGhub Windows x64 安装说明
+
+此文件随实际构建成功后的 HGhub-Windows-x64 制品分发。
+
+安装方式：
+1. 完整解压下载的制品 ZIP。
+2. 运行文件名中含有 setup 的 EXE，按向导安装。
+3. 从开始菜单或安装时创建的快捷方式启动 HGhub。
+
+直接运行方式：
+也可以运行同目录下的 HGhub.exe。程序仍依赖 Microsoft Edge WebView2 Runtime。
+https://developer.microsoft.com/microsoft-edge/webview2/
+
+程序依赖第三方数据源。成功安装和启动，并不代表所有第三方接口、图片或视频都可访问。
+若界面可以打开但数据加载失败，先在应用设置中检查线路及网络诊断。
+
+许可证和原作者署名见随附 LICENSE.txt，转发文件时保留该文件。
